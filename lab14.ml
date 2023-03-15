@@ -76,7 +76,7 @@ module LazyStream =
                       smap2 f (tail s1) (tail s2)) ;;
   end ;;
 
-(* We open the module for ease of access throguhout this lab. *)
+(* We open the module for ease of access throughout this lab. *)
   
 open LazyStream ;;
   
@@ -118,7 +118,7 @@ the textbook.
    directly as a recursive *value*. *)
   
 let rec nats =
-  fun () -> Cons (0, smap ((+) 1) nats) ;;
+  fun () -> Cons (0, smap succ nats) ;;
 
 (* An alternative implementation defines a recursive *function*
 `nats_from` that generates the natural numbers starting from an
@@ -257,7 +257,8 @@ even numbers by filtering the natural numbers for the evens:
 
     let rec sfilter pred s = 
       let Cons (h, t) = s () in
-      if pred h then fun () -> Cons (h, sfilter pred t)
+      if pred h 
+      then fun () -> Cons (h, sfilter pred t)
       else fun () -> (sfilter pred t) () ;;
  *)
 
@@ -348,14 +349,14 @@ functions were implemented. Here are some timings from the solution
 code on my laptop:
 
   n      time for first n primes (seconds)
-  1 --   0.00000691
-  2 --   0.00002503
-  3 --   0.00009799
-  4 --   0.00133109
-  5 --   0.00341392
-  6 --   0.04702091
-  7 --   0.18753004
-  8 --   2.98919892
+  1 --   0.00000596
+  2 --   0.00002193
+  3 --   0.00008798
+  4 --   0.00143099
+  5 --   0.00456285
+  6 --   0.06747317
+  7 --   0.23530412
+  8 --   3.80366087
 
 Just generating the first eight primes takes three seconds -- longer
 if a less efficient `sfilter` is used.  You'll address this
@@ -407,14 +408,14 @@ takes more than half a second: *)
 exception Done ;;
 
 let prime_timing () =
-  print_endline "Testing sieve based on lazy streams";
+  print_endline "  n      time for first n primes (seconds)";
   let n = ref 1 in
   let finished = ref false in
   while not !finished && !n < 100 do
-    let _l, t = Absbook.call_timed (first !n) primes in
-    Printf.printf "%3d -- %12.8f\n" !n t;
+    let _l, msecs = Absbook.call_timed (first !n) primes in
+    Printf.printf "%3d -- %12.8f\n" !n (msecs /. 1000.);
     n := succ !n;
-    if t > 0.5 then finished := true
+    if msecs > 500. then finished := true
   done ;;
 
 let _ = prime_timing () ;;
