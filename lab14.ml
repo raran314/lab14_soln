@@ -368,7 +368,7 @@ useful: *)
 (* not_div_by n m -- Predicate returns true if `m` is not evenly
    divisible by `n` *)
 let not_div_by (n : int) (m : int) : bool = 
-  not (m mod n = 0) ;;
+  m mod n <> 0 ;;
 (*..................................................................*)
   
 (* A direct implementation of the 5-step process above (with numbers
