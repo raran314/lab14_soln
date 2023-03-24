@@ -9,7 +9,7 @@
  *)
 
 (* This lab provides practice with delayed (lazy) computations,
-implemented as user code using the natural lazy behavior of
+implemented as user code using the naturally lazy behavior of OCaml
 functions. (In the next lab we explore OCaml's built-in Lazy module.)
 
 In this lab, you will use an infinite data structure, the *stream*. *)
