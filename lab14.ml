@@ -147,11 +147,14 @@ input streams starting with an element of the first stream.
 For example, 'alternating' infinite streams of ones (1,1,1,1....) and
 twos (2,2,2,2....) would look like this:
 
-   let ones_twos = alternating_stream ones twos ;;
-   -: val ones_twos : int stream = <fun>
-   
-   first 6 ones_twos;;
-   -: int list = [1; 2; 1; 2; 1; 2]
+     # first 10 (alternating_stream ones twos) ;;
+     - : int list = [1; 2; 1; 2; 1; 2; 1; 2; 1; 2]
+
+and alternating the natural numbers (0,1,2,3,4,...) and ones would
+look like this:
+
+     # first 10 (alternating_stream nats ones) ;;
+     - : int list = [0; 1; 1; 1; 2; 1; 3; 1; 4; 1]
 ....................................................................*)
 
 let rec alternating_stream (s1 : 'a stream) (s2 : 'a stream) : 'a stream =
@@ -256,10 +259,10 @@ even numbers by filtering the natural numbers for the evens:
    can force `s` explicitly once and reuse the results.
 
     let rec sfilter pred s = 
-      let Cons (h, t) = s () in
-      if pred h 
-      then fun () -> Cons (h, sfilter pred t)
-      else fun () -> (sfilter pred t) () ;;
+      let Cons (hd, tl) = s () in
+      if pred hd 
+      then fun () -> Cons (hd, sfilter pred tl)
+      else fun () -> (sfilter pred tl) () ;;
  *)
 
 let rec sfilter (pred : 'a -> bool) (s : 'a stream) : 'a stream = 
@@ -308,7 +311,7 @@ and again:
     ...
     2 3 5 7 11 13
 
-Here's the process of seiving a stream of numbers in more detail:
+Here's the process of sieving a stream of numbers in more detail:
 
     1. Retrieve the head and tail of the stream. The head is the first
        prime in the result stream; the tail is the list of remaining
@@ -348,18 +351,18 @@ this way; it'll take too long, depending on how your other stream
 functions were implemented. Here are some timings from the solution
 code on my laptop:
 
-  n      time for first n primes (seconds)
-  1 --   0.00000596
-  2 --   0.00002193
-  3 --   0.00008798
-  4 --   0.00143099
-  5 --   0.00456285
-  6 --   0.06747317
-  7 --   0.23530412
-  8 --   3.80366087
+  n      time for nth prime (seconds)
+  1 --   0.00000405
+  2 --   0.00001597
+  3 --   0.00006604
+  4 --   0.00105000
+  5 --   0.00343299
+  6 --   0.04916501
+  7 --   0.19323015
+  8 --   3.12322998
 
-Just generating the first eight primes takes three seconds -- longer
-if a less efficient `sfilter` is used.  You'll address this
+Just generating the first eight primes takes over three seconds --
+longer if a less efficient `sfilter` is used.  You'll address this
 performance problem in the next lab.)
 
 In defining the `sieve` function, the following function may be
@@ -408,7 +411,7 @@ takes more than half a second: *)
 exception Done ;;
 
 let prime_timing () =
-  print_endline "  n      time for first n primes (seconds)";
+  print_endline "  n      time for nth prime (seconds)";
   let n = ref 1 in
   let finished = ref false in
   while not !finished && !n < 100 do
@@ -419,4 +422,3 @@ let prime_timing () =
   done ;;
 
 let _ = prime_timing () ;;
-
